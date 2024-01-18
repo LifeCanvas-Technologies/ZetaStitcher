@@ -8,6 +8,7 @@ import threading
 import concurrent.futures
 from datetime import timedelta
 
+
 import json
 import yaml
 
@@ -35,7 +36,7 @@ class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter,
     pass
 
 
-def parse_args():
+def parse_args(raw_args=None):
     parser = argparse.ArgumentParser(
         description='''
 Stitch tiles in a folder.
@@ -52,7 +53,7 @@ Unless otherwise stated, all values are expected in px.
                'Version: {}'.format(__version__),
         formatter_class=CustomFormatter)
 
-    parser.add_argument('input_folder', help='input folder')
+    parser.add_argument("-i", dest = "input_folder", type=str, required=True, help='input folder')
     parser.add_argument('-o', type=str, default='stitch.yml', dest='output_file', help='output file')
     parser.add_argument('-c', '--ch', type=int, dest='channel', help='color channel')
     parser.add_argument('-j', type=int, dest='n_of_workers',
@@ -105,7 +106,7 @@ Unless otherwise stated, all values are expected in px.
     group.add_argument('--iY', action='store_true', dest='invert_y',
                        help='invert tile ordering along Y')
 
-    args = parser.parse_args()
+    args = parser.parse_args(raw_args)
 
     if args.overlap is None:
         if args.overlap_h is None or args.overlap_v is None:
@@ -366,8 +367,8 @@ class Runner(object):
                 }, f, default_flow_style=False)
 
 
-def main():
-    arg = parse_args()
+def main(raw_args=None):
+    arg = parse_args(raw_args)
 
     r = Runner()
 
@@ -383,7 +384,6 @@ def main():
     r.run()
     elapsed = timedelta(seconds=time.time() - t)
     logger.info(f'elapsed  time: {elapsed}')
-
 
 if __name__ == '__main__':
     main()
