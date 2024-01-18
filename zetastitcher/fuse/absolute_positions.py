@@ -57,7 +57,7 @@ def global_optimization(df, xcfm):
 
     stitcher = GaussianStitcher(
         n_dims=N_DIMS,
-        solver='cvxpy'
+        solver='osqp' # need to change because python3.11 doesn't support it 
     )
     node2coordinates, digraph = stitcher.stitch(data_in, v_origin)
 
